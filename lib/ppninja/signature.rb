@@ -7,14 +7,12 @@ module PPNinja
       @appsecret = appsecret
     end
 
-    def sign(queries, payload, http_method, path, timestamp)
+    def sign(queries, http_method, path, timestamp)
       # 1. filter parameters
       queries = {} unless queries.is_a?(Hash)
-      payload = {} unless payload.is_a?(Hash)
-
-      parameters = ppj_normalization_parameters(payload.merge(queries))
+      parameters = ppj_normalization_parameters(queries)
       # 2. get string_to_sign
-      string_to_sign = http_method + "\n" + path + "\n" + (parameters.empty? ? '' : parameters.to_json)
+      string_to_sign = http_method + "\n" + path + "\n" + parameters
 
       encrypt(string_to_sign, timestamp)
     end
@@ -32,17 +30,12 @@ module PPNinja
     end
 
     private
-
     def ppj_normalization_parameters(hash)
-      return hash unless hash.is_a?(Hash)
-
-      return_hash = {}
-      hash.keys.sort.each do |k|
-        next if hash[k].respond_to?('path') && File.exist?(hash[k].path)
+      queries = hash.keys.sort.map do |k|
         next if %w(x-ppj-credential x-ppj-timestamp x-ppj-signature).include?(k.downcase) # do not encode parameters used by encrption
-        return_hash[k] = ppj_normalization_parameters(hash[k])
+        URI.encode(k.to_s) + "=" + URI.encode(hash[k])
       end
-      return_hash
+      queries.join("&")
     end
   end
 end

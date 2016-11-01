@@ -18,10 +18,8 @@ module PPNinja
       md5 = Digest::MD5.hexdigest(File.read(file_path))
       payload = {
         file_source: File.new(file_path, 'rb'),
-        file_md5: md5
       }
-
-      response = send_request(nil, payload, 'POST', '/api/job/create')
+      response = send_request({file_md5: md5}, payload, 'POST', '/api/job/create')
       puts 'response: ', JSON.parse(response.body)
       JSON.parse(response.body)["data"]["token"]
     end
@@ -47,7 +45,7 @@ module PPNinja
 
     def send_request(queries, payload, http_method, path)
       timestamp = Time.now.to_i
-      signature = Signature.new(@appsecret).sign(queries, payload, http_method, path, timestamp)
+      signature = Signature.new(@appsecret).sign(queries, http_method, path, timestamp)
       authorizationStr = 'Credential=' + @appid + ',Timestamp=' + timestamp.to_s + ',Signature=' + signature
 
       RestClient::Request.execute(method: (http_method == 'POST' ? :post : :get), url: (@host + path).to_s,
