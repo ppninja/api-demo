@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+require 'byebug'
+require 'thor'
+require 'yaml'
+require_relative '../lib/ppninja'
+
+class App < Thor
+  package_name 'ppninja'
+  class_option :config, :type => :string, aliases:['C'], :default => "#{ENV['HOME']}/.ppninja_credentials"
+
+  no_commands do
+    def ppninja_api
+      @ppninja_api_client ||= PPNinja::ApiLoader.with options
+    end
+  end
+
+  desc 'config', '配置appid&appsecret'
+  option :appid, required: true, aliases: ['i']
+  option :appsecret, required: true, aliases: ['k']
+  option :host, required: true, aliases: ['h']
+  def config
+    config = {}
+    config.merge! YAML.load(File.read(options[:config])) if File.file?(options[:config])
+
+    # alter config
+    config['appid'] = options[:appid]
+    config['appsecret'] = options[:appsecret]
+    config['host'] =(/(http|https):\/\//.match(options[:host]) ? options[:host] : "http://#{options[:host]}/")
+    File.write(options[:config], YAML.dump(config))
+    puts "write config to #{options[:config]}"
+  end
+
+  desc 'upload [source]', '上传PPT类型文件'
+  def upload(source_path)
+    ppninja_api.upload(source_path)
+  end
+
+  desc 'status [token]', "根据上传返回的Token查询当前PPT转化的进度"
+  def status(token)
+    ppninja_api.status(token)
+  end
+
+  desc 'download [token] [file_path]', "根据上传返回的Token下载转化好的H5网页"
+  def download(token, file_path=:default)
+    ppninja_api.download(token, file_path)
+  end
+
+
+end
+
+App.start
