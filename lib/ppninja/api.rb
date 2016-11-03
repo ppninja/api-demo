@@ -39,28 +39,35 @@ module PPNinja
 
     protected
     def get(path, headers = {})
-      with_signature(path, 'GET', headers[:params]) do |authorization_token|
-        client.get path, headers.merge(:'x-ppj-authorization' => authorization_token)
+      with_signature(path, 'GET', headers[:params]) do |sub_headers|
+        client.get path, headers.merge(sub_headers)
       end
     end
 
     def post(path, payload, headers = {})
-      with_signature(path, 'POST', headers[:params]) do |authorization_token|
-        client.post path, payload, headers.merge(:'x-ppj-authorization' => authorization_token)
+      with_signature(path, 'POST', headers[:params]) do |sub_headers|
+        client.post path, payload, headers.merge(sub_headers)
       end
     end
 
     def post_file(path, file, headers = {})
-      with_signature(path, 'POST', headers[:params]) do |authorization_token|
-        client.post_file path, file, headers.merge(:'x-ppj-authorization' => authorization_token)
+      with_signature(path, 'POST', headers[:params]) do |sub_headers|
+        client.post_file path, file, headers.merge(sub_headers)
       end
     end
 
     def with_signature(path, http_method, params)
         timestamp = Time.now.to_i
         signature = Signature.new(@appsecret).sign(params, http_method, path, timestamp)
-        authorizationStr = 'Credential=' + @appid + ',Timestamp=' + timestamp.to_s + ',Signature=' + signature
-        yield(authorizationStr)
+        # authorizationStr = 'Credential=' + @appid + ',Timestamp=' + timestamp.to_s + ',Signature=' + signature
+        # yield(:'x-ppj-authorization' => authorizationStr)
+        authorization_params = {
+            :"X-Ppj-Credential" => @appid,
+            # :"X-Ppj-Mode" => 'test'            # 设置queries里面X-Ppj-Mode = ‘test’ 可以不通过签名算法，进行后续api操作
+            :"X-Ppj-Timestamp" => timestamp,
+            :"X-Ppj-Signature" => signature
+        }
+        yield(params: params.merge(authorization_params))
     end
   end
 end

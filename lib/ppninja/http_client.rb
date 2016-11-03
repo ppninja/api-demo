@@ -46,7 +46,7 @@ module PPNinja
       header['Accept'] = 'application/json'
       response = yield("#{url_base}#{path}", header)
 
-      raise "Request not OK, response status #{response.status}" if response.status != 200
+      raise "Request not OK, response status #{response.status}, msg #{JSON.parse(response.body)["msg"]}" if response.status != 200
       parse_response(response, as || :json) do |parse_as, data|
         data
       end

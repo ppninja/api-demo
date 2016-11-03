@@ -13,7 +13,7 @@ module PPNinja
       parameters = ppj_normalization_parameters(queries)
       # 2. get string_to_sign
       string_to_sign = http_method + "\n" + path + "\n" + parameters
-
+      
       encrypt(string_to_sign, timestamp)
     end
 
@@ -30,12 +30,13 @@ module PPNinja
     end
 
     private
+
     def ppj_normalization_parameters(hash)
       queries = hash.keys.sort.map do |k|
-        next if %w(x-ppj-credential x-ppj-timestamp x-ppj-signature).include?(k.downcase) # do not encode parameters used by encrption
-        URI.encode(k.to_s) + "=" + URI.encode(hash[k])
+        next if /^x-ppj-*/.match(k.downcase) # do not encode parameters used by encrption
+        URI.encode(k.to_s) + '=' + URI.encode(hash[k])
       end
-      queries.join("&")
+      (queries - [nil, '']).join('&')
     end
   end
 end
