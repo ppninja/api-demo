@@ -12,6 +12,11 @@ module PPNinja
       @client = HttpClient.new(host)
     end
 
+    def list(conditions = nil)
+      res = get '/api/job/list', params: conditions
+      puts res
+    end
+
     def upload(file_path)
       # valid file and get file md5
       raise 'FilePathError' unless File.file?(file_path)

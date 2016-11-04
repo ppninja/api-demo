@@ -40,6 +40,19 @@ class App < Thor
     ppninja_api.status(token)
   end
 
+
+  desc 'list', "返回所有项目的token，如果有conditions，根据conditions返回结果, 见help"
+  option :status, required: false, banner: "<status>"
+  option :start_date, required: false, banner: "<start_date>"
+  option :end_date, required: false, banner: "<end_date>"
+  def list
+    conditions = {}
+    conditions[:status] = options[:status] if options[:status]
+    conditions[:start_date] = options[:start_date] if options[:start_date]
+    conditions[:end_date] = options[:end_date] if options[:end_date]
+    ppninja_api.list(conditions)
+  end
+
   desc 'download [token] [file_path]', "根据上传返回的Token下载转化好的H5网页"
   def download(token, file_path=:default)
     ppninja_api.download(token, file_path)
