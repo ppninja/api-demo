@@ -27,8 +27,6 @@ module PPNinja
 
     def download(token, file_path=:default)
       # token get from upload
-      stat = status(token)
-      return puts 'convert is not finishing.' unless stat == 'completed'
       res = get '/api/job/download', params: {token: token}, content_type: 'application/zip'
       # res is a Tempfile object
       file_path = "#{token}.zip" if file_path == :default
