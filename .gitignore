@@ -1,2 +1,3 @@
 .byebug_history
 *.zip
+nodejs-version/node_modules
