@@ -1,28 +1,28 @@
-// We need this to build our post string
-var querystring = require('querystring');
-var http = require('http');
-var request = require('request');
-var fs = require('fs');
-var md5File = require('md5-file');
+import { PpjClient } from './lib/ppj_client';
 
-var filepath = 'test1.pptx';
+let path = "/path/to/ppt/file";
 
-var HOST = '';
-var APPID = '';
+let client = new PpjClient('appid', 'appsecret', 'host');
 
-queries = querystring.stringify({
-    file_md5: md5File.sync(filepath),
-    'X-Ppj-Mode': 'test',
-    'X-Ppj-Credential': APPID
+//上传
+client.upload(path, (res) => {
+    console.log(res);
+});
+
+//查询状态  e.g. token is 'YhyfTjk3zUfuZbxN'
+client.status("token_responded_with_upload", (res) => {
+    console.log(res);
+});
+
+// for list
+// params {} could be filter
+// e.g.
+// status:      'completed'
+// start_date: '20170101'
+// end_date: '20170102'
+client.list({}, (res)=>{
+    console.log(res);
 })
-console.log(queries);
 
-var req = request.post(HOST + "/api/job/create?" + queries, function(err, resp, body){
-    if (err) {
-    console.log('Error!');
-  } else {
-    console.log('URL: ' + body);
-  }
-})
-var form = req.form();
-form.append('file_source', fs.createReadStream(filepath));
+// for download
+client.download("token_responded_with_upload", 'path_to_save_zip_file');

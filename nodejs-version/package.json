@@ -4,14 +4,20 @@
   "description": "a small program to illustrate api of ppninja-enterprise",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.15.3",
+    "babel-cli": "^6.23.0",
     "express": "^4.14.0",
+    "form-data": "^2.1.2",
     "md5-file": "^3.1.1",
+    "query-string": "^4.3.2",
     "querystring": "^0.2.0",
     "request": "^2.79.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "babel-node --presets es2015 index.js"
   },
   "author": "ypzhao",
   "license": "ISC"
