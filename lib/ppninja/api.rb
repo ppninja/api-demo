@@ -9,7 +9,7 @@ module PPNinja
     def initialize(appid, appsecret, host)
       @appid = appid
       @appsecret = appsecret
-      @client = HttpClient.new(host)
+      @client = HttpClient.new(host, 60)
     end
 
     def list(conditions = nil)
