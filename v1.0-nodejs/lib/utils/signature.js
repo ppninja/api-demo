@@ -3,7 +3,7 @@ import * as crypto from 'crypto';
 const IgnoreParamters = ['file_source'];
 
 function sign_parameters(request) {
-    let params = request.parameters;
+    let params = request.parameters || {};
 
     return Object.keys(params).filter(function(val) {
         return !(val.startsWith('_') || IgnoreParamters.indexOf(val) >= 0);
