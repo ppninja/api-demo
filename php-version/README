@@ -4,9 +4,9 @@ extension curl
 
 如果你的版本低于5.5  请修改如下部分 否则将无法正常上传文件
 
-Auth.php
-修改50行 self::$postParam = ['file_source'=>new \CURLFile($filename),'file_md5'=>md5_file($filename)];
-为 self::$postParam = ['file_source'=>'@'.$filename,'file_md5'=>md5_file($filename)];
+Ppj.php
+`'file_source' => new \CURLFile($filename)`
+为 `'file_source' => '@'.$filename`
 
 5.6+的php curl扩展默认不支持旧的'@'语法 5.5版本的两种语法都支持
 

@@ -2,7 +2,6 @@
 namespace Ppj;
 
 class Config{
-    static public $APPID = '';
-    static public $APPSECRET = '';
-    static public $HOST = '';
+    static public $ACCESSKEY = 'your_access_key';
+    static public $ROOTPATH = 'https://sandbox.ppj.io/api';
 }
