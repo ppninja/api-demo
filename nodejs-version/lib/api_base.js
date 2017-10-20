@@ -1,39 +1,40 @@
-import { HttpClient } from './utils/http_client';
-import { Signature } from './utils/signature';
+const request = require('request');
+const queryString = require('query-string');
 
-export class ApiBase {
-    constructor(appid, appsecret, host) {
-        this.appid = appid;
-        this.appsecret = appsecret;
-        this.host = host;
+class ApiBase {
+  constructor(accesskey, host) {
+    this.accesskey = accesskey
+    this.host = host
+  }
 
-        this.http_client = new HttpClient(host);
-        this.signature = new Signature(appid, appsecret);
+  post(path, formData, cb) {
+    var options = {
+      url: this.host + path,
+      method: 'POST',
+      headers: {
+        'X-PPJ-Credential': this.accesskey
+      },
+      formData: formData
     }
 
-    add_signature_to_params(verb, path, params = {}){
-        let timestamp = Math.floor(Date.now() / 1000);
-        let signature = this.signature.sign(verb, path, params, timestamp);
+    request(options, function (error, response, body) {
+      if (typeof cb === 'function') cb(response.statusCode, body)
+    })
+  }
 
-        params['X-Ppj-Credential'] = this.appid;
-        params['X-Ppj-Timestamp'] = timestamp;
-        params['X-Ppj-Signature'] = signature;
+  get(path, params, cb) {
+    var query = params ? '?' + queryString.stringify(params) : '';
+    var options = {
+      url: this.host + path + query,
+      headers: {
+        'X-PPJ-Credential': this.accesskey
+      }
+    };
 
-        return params;
-    }
-
-    post(path, data, params = {}, headers= {}) {
-        params = this.add_signature_to_params('POST', path, params);
-        return this.http_client.post(path, data, params, headers);
-    }
-
-    get(path, params = {}) {
-        params = this.add_signature_to_params('GET', path, params);
-        return this.http_client.get(path, params);
-    }
-
-    get_file(path, params = {}){
-        params = this.add_signature_to_params('GET', path, params);
-        return this.http_client.get_file(path, params);
-    }
+    request(options, function (error, response, body) {
+      if (typeof cb === 'function') cb(response.statusCode, body)
+    })
+  }
 }
+
+module.exports = ApiBase
