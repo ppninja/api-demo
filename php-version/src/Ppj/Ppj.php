@@ -24,19 +24,17 @@ class Ppj
 
     /**
      * Instantiates a new Ppj super-class object.
-     *
-     * @throws PpjSDKException
      */
     public function __construct()
     {
         // init http client for send request
-        $this->client = new HttpClient(Config::$ACCESSKEY, Config::$ROOTPATH]);
+        $this->client = new HttpClient(Config::$ACCESSKEY, Config::$ROOTPATH);
     }
 
     /**
      * 查询所有请求信息
      * @param type $token
-     * @return array
+     * @return array ($status, $content)
      */
     public function listAll($params){
         return $this->client->http_get('/jobs', $params);
@@ -47,7 +45,7 @@ class Ppj
      *
      * @param string $filename  Path to uploading file
      *
-     * @return array [$status, $message]
+     * @return array ($status, $content)
      */
     public function upload($filename){
         return $this->client->http_post('/jobs', array(
@@ -59,7 +57,7 @@ class Ppj
     /**
      * 查询转码状态
      * @param type $token
-     * @return string
+     * @return array ($status, $content)
      */
     public function status($token){
         return $this->client->http_get('/jobs/'.$token);
@@ -68,9 +66,18 @@ class Ppj
     /**
      * 下载文件
      * @param type $token
-     * @param srting $filename 文件下载的路径
+     * @param array ($status, $content)
      */
     public function download($token){
         return $this->client->http_get('/jobs/'.$token.'/download');
+    }
+
+    /**
+     * 查询可用额度
+     *
+     * @return array ($status, $content)
+     */
+    public function quotas(){
+        return $this->client->http_get('/quotas');
     }
 }

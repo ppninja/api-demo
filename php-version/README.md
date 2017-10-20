@@ -1,38 +1,36 @@
-所需环境
-php version 5.5+
-extension curl
+## PPJ SDK for PHP (v1.0 正式版)
 
-如果你的版本低于5.5  请修改如下部分 否则将无法正常上传文件
+This repository contains the open source PHP SDK that allows you to access the PPJ Platform from your PHP app.
 
-Ppj.php
-`'file_source' => new \CURLFile($filename)`
-为 `'file_source' => '@'.$filename`
+### Installation
+--------------------------
+not support for any Composer right now.
 
-5.6+的php curl扩展默认不支持旧的'@'语法 5.5版本的两种语法都支持
+manually put `src/Ppj` in your working directory, and require the `src/Ppj/autoload.php`
 
-Demo:
-1. 将host, appid, appsecret添加到src/Ppj/Config.php 中
-2. 见demo.php
+see demo.php
 
+```
+require_once __DIR__ . '/src/Ppj/autoload.php';
+use Ppj\Ppj;
 
-使用方法
-1.引入sdk文件
-<?php
-use Ppj\Auth;
-require_once 'Ppj/autoload.php';
-$auth = = new Auth(PPJAPPID,PPJAPPSEECRET);
+$client = new Ppj();
+```
 
+### Apis
 
-2.上传文件
-<?php
-//获取上传token $file_path 为要上传文件绝对路径
-$token = $auth->getUploadToken($file_path);
-$return = $auth->upload($token);
+API回调的参数见[主文档](https://ppninja.github.io/saas-docs/#introduction)，这里只注明 php sdk 中与主文档对应的请求
 
-返回值见$return
+函数名|参数|说明
+---|---|---
+upload|$filename: string|[创建Job](https://ppninja.github.io/saas-docs/#create)
+status|$token: string|[查询特定Job](https://ppninja.github.io/saas-docs/#show)
+download|$token: string|[下载产物](https://ppninja.github.io/saas-docs/#download)
+listAll|$params: array|[获取所有Jobs](https://ppninja.github.io/saas-docs/#list)
+quotas||[查看可用额度](https://ppninja.github.io/saas-docs/#quotas)
 
-3.下载文件
-<?php
-//$token为上传成功以后返回的文件token  $filename为要下载到的绝对路径
-//如 /www/a.zip   文件的后缀统一为zip
-$result = $auth->downLoad($token,$filename);
+### 仍有疑问？
+请加QQ群（459962155）或微信（GockGe）咨询
+
+### Rights
+All Rights reserved to https://ppj.io.

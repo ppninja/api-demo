@@ -1,11 +1,4 @@
 <?php
-// use Ppj\Auth;
-// require_once 'autoload.php';
-//
-// $auth = new Auth();
-// $filename = '/Users/daggerjames/Desktop/ppts/test.pptx';
-//
-// echo $auth->upload($filename);
 require_once __DIR__ . '/src/Ppj/autoload.php';
 use Ppj\Ppj;
 
@@ -36,3 +29,7 @@ $client = new Ppj();
 // $opts = array('start_date'=>'2017-10-01');   YYYY-MM-DD
 // $result = $client->listAll($opts);
 // echo $result['status'] .': '.$result['content'];
+
+// demo: get quotas status
+$result = $client->quotas();
+echo $result['status'] .': '.$result['content'];
