@@ -17,7 +17,7 @@ class ApiBase {
       formData: formData
     }
 
-    request(options, function (error, response, body) {
+    request(options, function(error, response, body) {
       if (typeof cb === 'function') cb(response.statusCode, body)
     })
   }
@@ -31,9 +31,13 @@ class ApiBase {
       }
     };
 
-    request(options, function (error, response, body) {
-      if (typeof cb === 'function') cb(response.statusCode, body)
-    })
+    if (cb && typeof cb === 'function') {
+      request(options, function(error, response, body) {
+        if (typeof cb === 'function') cb(response.statusCode, body)
+      })
+    } else {
+      return request(options)
+    }
   }
 }
 

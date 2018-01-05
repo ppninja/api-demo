@@ -9,7 +9,7 @@
     "url": "https://github.com/daggerjames"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6"
   },
   "license": "MIT",
   "repository": "ppninja/api-demo",

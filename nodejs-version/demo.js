@@ -1,5 +1,5 @@
 // a demo
-const PPJClient = require('ppj-api')
+const PPJClient = require('./lib/index.js')
 
 const client = new PPJClient('your_ppj_access_key', 'https://sandbox.ppj.io/api')
 

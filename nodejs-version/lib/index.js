@@ -10,7 +10,7 @@ class PPJClient {
 
   // need refactor after further learning on Promise or async/await
   upload(file_path, callback) {
-    callback = callback || function () {}
+    callback = callback || function() {}
     this.api_base.post(`/jobs`, {
       file_source: fs.createReadStream(file_path),
       file_md5: md5File.sync(file_path)
@@ -18,32 +18,30 @@ class PPJClient {
   }
 
   status(token, callback) {
-    callback = callback || function () {}
+    callback = callback || function() {}
     this.api_base.get(`/jobs/${token}`, null, callback)
   }
 
   download(token, path, callback) {
-    callback = callback || function () {}
-    this.api_base.get(`/jobs/${token}/download`, null, function (status, content) {
-      if (status === 200) {
-        fs.writeFile(path, content, function (err) {
-          if (err) throw err;
-          callback(status, path)
-        })
-      } else {
-        callback(status, content)
-      }
+    callback = callback || function() {}
+    let statusCode = null
+    this.api_base.get(`/jobs/${token}/download`).on('error', function(err) {
+      console.log('on error', err)
+    }).on('response', function(response) {
+      statusCode = response.statusCode
+    }).pipe(fs.createWriteStream(path)).on('finish', function() {
+      callback(statusCode, path)
     })
   }
 
   list(params, callback) {
-    callback = callback || function () {}
+    callback = callback || function() {}
 
     this.api_base.get('/jobs', params, callback);
   }
 
   quotas(callback) {
-    callback = callback || function () {}
+    callback = callback || function() {}
     this.api_base.get('/quotas', null, callback)
   }
 }
